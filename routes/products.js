@@ -4,6 +4,18 @@ const createError = require('http-errors');
 var Product = require('../models/product');
 const authenticationMiddleware = require('../middlewares/authentication');
 
+//get all products
+router.get('/',async (req,res,next) =>{
+let products = await Product.find();
+res.send(products);
+});
+
+//get by id 
+router.get('/:productId', async (req,res,next)=>{
+    let product = await Product.findById(req.params.productId);
+    res.send(product);
+});
+
 router.use(authenticationMiddleware);
 
 //post product 
@@ -16,17 +28,7 @@ router.post('/',(req,res,next)=>{
   });
 });
 
-//get all products
-router.get('/', authenticationMiddleware,async (req,res,next) =>{
-let products = await Product.find();
-res.send(products);
-});
 
-//get by id 
-router.get('/:productId', async (req,res,next)=>{
-    let product = await Product.findById(req.params.productId);
-    res.send(product);
-});
 
 /// get products per user
 router.get('/user/:userid', async (req,res,next) => {
@@ -39,9 +41,9 @@ router.delete('/:productId',async (req,res,next) => {
     res.send(toBeDeleted);
 });
     
-// router.patch('/:productId', (req,res,next) => {
-//     let updated = Product.patch(req.params.productId, req.body);
-//     res.send(updated);
-// });
+router.patch('/:productId', (req,res,next) => {
+    let updated = Product.findByIdAndUpdate(req.params.productId, req.body);
+    res.send(updated);
+});
     
 module.exports = router;
